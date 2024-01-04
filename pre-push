@@ -1,0 +1,17 @@
+#!/bin/sh
+command -v git-lfs >/dev/null 2>&1 || { echo >&2 "\nThis repository is configured for Git LFS but 'git-lfs' was not found on your path. If you no longer wish to use Git LFS, remove this hook by deleting the 'pre-push' file in the hooks directory (set by 'core.hookspath'; usually '.git/hooks').\n"; exit 2; }
+git lfs pre-push "$@"
+
+if command -v fvm &> /dev/null
+then
+    echo "fvm exist, run \"fvm flutter analyze\""
+    fvm flutter analyze
+else
+    echo "fvm not exist, run \"flutter analyze\""
+    flutter analyze
+fi
+
+if [ $? -ne 0 ]; then
+   echo "check fail"
+  exit 1
+fi
